@@ -4,6 +4,13 @@ import imutils
 
 cap = cv2.VideoCapture('/Users/hientruongthmh/Documents/AI_VNUK/S2_Ping_Pong/pingpong.mp4')
 
+#khai báo 2 bên
+checkA = False
+checkB = False
+
+scoreA = 0
+scoreB = 0
+
 while(True):
     _, frame = cap.read() # lưu biến video
 
@@ -29,7 +36,22 @@ while(True):
     
         if radius > 0: 
             cv2.circle(frame, (int(x), int(y)), int(radius), (0,0,255), 2  )
- 
+    
+    cv2.line(img = frame, pt1 = (900, 300), pt2 = (900, 700), color = (0,0,255), thickness=4) # kẻ 1 đường chia đôi bàn
+
+    #Tính điểm
+    if(x < 900 and checkA == False):
+        scoreB += 1
+        checkA = True
+        checkB = False
+        
+    if(x > 900 and checkB == False):
+        scoreA += 1
+        checkB = True
+        checkA = False
+
+    cv2.putText(img = frame, text = "Score: " + str(scoreA) + "|" + str(scoreB), org = (20,30), fontFace = cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1.0, color = (0,0,255), thickness=2)
+
     cv2.imshow('frame',frame) # tạo khung hình
 
     if cv2.waitKey(50) & 0xFF == ord('q'): # mở video

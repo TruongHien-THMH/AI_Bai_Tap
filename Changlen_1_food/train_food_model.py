@@ -41,7 +41,7 @@ val_gen = val_datagen.flow_from_directory(
 )
 
 # ===== MODEL =====
-base = MobileNetV2(weights='imagenet', include_top=False, input_shape=(IMG_SIZE[0], IMG_SIZE[1], 3))
+base = MobileNetV2(weights='imagenet', include_top=False, input_shape=(150, 150, 3))
 x = GlobalAveragePooling2D()(base.output)
 x = Dropout(0.3)(x)
 preds = Dense(train_gen.num_classes, activation='softmax')(x)

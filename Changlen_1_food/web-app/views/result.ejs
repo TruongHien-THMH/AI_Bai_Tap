@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Result</title></head>
+<body>
+  <h1>Prediction</h1>
+  <% if (result.error) { %>
+    <p>Error: <%= result.error %></p>
+  <% } else { %>
+    <p>Label: <%= result.label %></p>
+    <p>Confidence: <%= (result.confidence*100).toFixed(2) %>%</p>
+  <% } %>
+  <a href="/">Back</a>
+</body>
+</html>

@@ -1,7 +1,8 @@
-import streamlit as st
-import tensorflow as tf
-import numpy as np
+import os
 import json
+import tensorflow as tf
+import streamlit as st
+import numpy as np
 from PIL import Image
 
 # ===== CẤU HÌNH CƠ BẢN =====
@@ -12,13 +13,26 @@ st.write("Ứng dụng nhận diện ảnh **Phở**, **Bánh mì**, **Bún** b�
 # ===== TẢI MODEL =====
 @st.cache_resource
 def load_model():
-    model = tf.keras.models.load_model("food_model.h5")
-    with open("classes.json", "r") as f:
-        classes = json.load(f)
-    return model, classes
+    # Xác định đường dẫn tuyệt đối tới file app_streamlit.py
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(base_dir, "food_model.h5")
+    class_path = os.path.join(base_dir, "classes.json")
 
-model, classes = load_model()
-IMG_SIZE = (224, 224)
+    # Kiểm tra tồn tại
+    if not os.path.exists(model_path):
+        st.error(f"❌ Không tìm thấy model tại: {model_path}")
+        raise FileNotFoundError(f"Không tìm thấy model tại: {model_path}")
+
+    if not os.path.exists(class_path):
+        st.error(f"❌ Không tìm thấy classes.json tại: {class_path}")
+        raise FileNotFoundError(f"Không tìm thấy classes.json tại: {class_path}")
+
+    # Load model và class
+    model = tf.keras.models.load_model(model_path)
+    with open(class_path, "r") as f:
+        classes = json.load(f)
+
+    return model, classes
 
 # ===== HÀM XỬ LÝ ẢNH =====
 def preprocess_image(image: Image.Image):

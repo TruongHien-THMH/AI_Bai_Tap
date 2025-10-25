@@ -35,11 +35,19 @@ def load_model():
     return model, classes
 
 # ===== HÀM XỬ LÝ ẢNH =====
-def preprocess_image(image: Image.Image):
+IMG_SIZE = (150, 150)
+
+def preprocess_image(uploaded_file):
+    # Đọc ảnh từ stream
+    image = Image.open(uploaded_file)
+
+    # Chuyển RGB và resize
     img = image.convert("RGB").resize(IMG_SIZE)
-    arr = np.array(img) / 255.0
-    arr = np.expand_dims(arr, axis=0)
-    return arr
+
+    # Chuẩn hóa dữ liệu thành mảng numpy
+    img_array = np.array(img) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+    return img_array
 
 # ===== GIAO DIỆN =====
 option = st.radio("Chọn phương thức nhập ảnh:", ["📸 Dùng máy ảnh", "🖼️ Tải ảnh lên"])

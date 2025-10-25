@@ -37,17 +37,33 @@ def load_model():
 # ===== HÀM XỬ LÝ ẢNH =====
 IMG_SIZE = (150, 150)
 
+# Hàm tiền xử lý ảnh
 def preprocess_image(uploaded_file):
-    # Đọc ảnh từ stream
     image = Image.open(uploaded_file)
-
-    # Chuyển RGB và resize
     img = image.convert("RGB").resize(IMG_SIZE)
-
-    # Chuẩn hóa dữ liệu thành mảng numpy
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
     return img_array
+
+# Load model
+model = tf.keras.models.load_model("food_model.h5")
+
+st.title("🍜 Ứng dụng nhận diện món ăn Việt")
+
+uploaded_file = st.file_uploader("Tải ảnh món ăn lên:", type=["jpg", "jpeg", "png"])
+
+if uploaded_file is not None:
+    # Hiển thị ảnh
+    st.image(uploaded_file, caption="Ảnh bạn đã tải lên", use_column_width=True)
+
+    # Tiền xử lý và dự đoán
+    img_array = preprocess_image(uploaded_file)
+    prediction = model.predict(img_array)
+
+    # Hiển thị kết quả
+    st.write("Kết quả dự đoán:", prediction)
+else:
+    st.info("⬆️ Hãy tải ảnh lên để bắt đầu nhận diện.")
 
 # ===== GIAO DIỆN =====
 option = st.radio("Chọn phương thức nhập ảnh:", ["📸 Dùng máy ảnh", "🖼️ Tải ảnh lên"])

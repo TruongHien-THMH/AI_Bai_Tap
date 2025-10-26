@@ -8,7 +8,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 
 # ===== CẤU HÌNH =====
-IMG_SIZE = (224, 224)
+IMG_SIZE = (150, 150)
 BATCH_SIZE = 16
 EPOCHS = 15
 DATA_DIR = "dataset"
@@ -41,11 +41,12 @@ val_gen = val_datagen.flow_from_directory(
 )
 
 # ===== MODEL =====
-base = MobileNetV2(weights='imagenet', include_top=False, input_shape=(150, 150, 3))
+base = MobileNetV2(weights='imagenet', include_top=False, input_shape=(IMG_SIZE[0], IMG_SIZE[1], 3))
 x = GlobalAveragePooling2D()(base.output)
 x = Dropout(0.3)(x)
 preds = Dense(train_gen.num_classes, activation='softmax')(x)
 model = Model(inputs=base.input, outputs=preds)
+print("Input shape model:", model.input_shape)
 
 # ===== TRAINING =====
 for layer in base.layers:
